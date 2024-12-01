@@ -1,34 +1,10 @@
 package main
 
 import (
-	"bufio"
+	"AoC2024/day01/shared"
 	"fmt"
-	"os"
 	"sort"
-	"strconv"
-	"strings"
 )
-
-func readArrays() ([]int, []int) {
-	file, err := os.Open("input")
-	if err != nil {
-		fmt.Println("Error openning the file", err)
-	}
-	defer file.Close()
-
-	var left, right []int
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		nums := strings.Fields(scanner.Text())
-		l, _ := strconv.Atoi(nums[0])
-		r, _ := strconv.Atoi(nums[1])
-		left = append(left, l)
-		right = append(right, r)
-	}
-
-	return left, right
-}
 
 func getDiff(x []int, y []int) []uint {
 	var diff []uint
@@ -43,7 +19,7 @@ func getDiff(x []int, y []int) []uint {
 }
 
 func main() {
-	var x, y []int = readArrays()
+	var x, y []int = shared.ReadArrays()
 
 	// Sort arrays
 	sort.Ints(x)
