@@ -43,13 +43,8 @@ func isAorDescending(arr []int) bool {
 		diffs[i] = arr[i+1] - arr[i]
 	}
 
-	var ascending bool = (slices.Min(diffs) >= 1) && (slices.Max(diffs) <= 3)
-	var decending bool = (slices.Max(diffs) <= -1) && (slices.Min(diffs) >= -3)
-	if ascending || decending {
-		return true
-	} else {
-		return false
-	}
+	maxDiff, minDiff := slices.Max(diffs), slices.Min(diffs)
+	return ((minDiff >= 1) && (maxDiff <= 3))|| ((maxDiff <= -1) && (minDiff >= -3))
 }
 
 func main() {
