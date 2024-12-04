@@ -48,7 +48,7 @@ func nToRune(n float64) rune {
 	}
 }
 
-func convertToMatrix(s string) mat.Matrix {
+func convertToMatrix(s string) mat.Dense {
 	var lines []string = strings.Split(s, "\n")
 	var lenLines int = len(strings.Split(lines[0], ""))
 
@@ -61,12 +61,12 @@ func convertToMatrix(s string) mat.Matrix {
 			matrix.Set(i, j, runeToN(c))
 		}
 	}
-	return matrix
+	return *matrix
 }
 
 func convertToString(matrix mat.Matrix) string {
 	var s string
-  n, m := matrix.Dims()
+	n, m := matrix.Dims()
 	for i := 0; i < n; i++ {
 		for j := 0; j < m; j++ {
 			s += string(nToRune(matrix.At(i, j)))
@@ -74,6 +74,22 @@ func convertToString(matrix mat.Matrix) string {
 		s += "\n"
 	}
 	return s
+}
+
+func nDiagMatchesSlash(matrix mat.Dense) int {
+	var nMatches int
+	n, m := matrix.Dims()
+	for i := 0; i < n-3; i++ {
+		for j := 0; j < m-3; j++ {
+			if matrix.At(i, j) == 1 &&
+				matrix.At(i+1, j+1) == 2 &&
+				matrix.At(i+2, j+2) == 3 &&
+				matrix.At(i+3, j+3) == 4 {
+				nMatches += 1
+			}
+		}
+	}
+	return nMatches
 }
 
 func main() {
@@ -88,7 +104,6 @@ func main() {
 	// horizontal backward
 	n_xmas += countHF(file_as_string)
 	n_xmas += countHB(file_as_string)
-	fmt.Println(n_xmas)
 
 	// Transopse matrix and handle normally
 	// vertical forward
@@ -97,11 +112,27 @@ func main() {
 	var file_as_string_T string = convertToString(matrix.T())
 	n_xmas += countHF(file_as_string_T)
 	n_xmas += countHB(file_as_string_T)
-	fmt.Println(n_xmas)
 
 	// Convolution like scan
 	// diagnoal forward down
-	// diagonal forward up
-	// diagonal backward up
+	n_xmas += nDiagMatchesSlash(matrix)
+	n, m := matrix.Dims()
+	linspaceN := make([]int, n)
+	linspaceM := make([]int, m)
+	for i := 0; i < n; i++ {
+		linspaceN[i] = n - i - 1
+	}
+	for i := 0; i < m; i++ {
+		linspaceM[i] = m - i - 1
+	}
 	// diagonal backward down
+	matrix.PermuteCols(linspaceM, false)
+	n_xmas += nDiagMatchesSlash(matrix)
+	// diagonal backward up
+	matrix.PermuteRows(linspaceN, false)
+	n_xmas += nDiagMatchesSlash(matrix)
+	// diagonal forward up
+	matrix.PermuteCols(linspaceM, false)
+	n_xmas += nDiagMatchesSlash(matrix)
+	fmt.Println(n_xmas)
 }
