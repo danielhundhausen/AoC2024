@@ -50,8 +50,37 @@ func loadRulesAndUpdates() ([][2]int, [][]int) {
 	return rules, updates
 }
 
+func updatePassesRules(update []int, rules [][2]int) (bool, int) {
+
+  for _, rule := range rules {
+    var idxFirst int = -1
+    var idxSecond int = -1
+    for i, x := range update {
+      if x == rule[0] {
+        idxFirst = i
+      } else if x == rule[1] {
+        idxSecond = i
+      }
+      if (idxFirst > -1) && (idxSecond > -1) {
+        break
+      }
+    }
+    if idxFirst > idxSecond && idxSecond > -1 {
+      return false, 0
+    }
+  }
+
+  var idxMiddle int = int(len(update) / 2)
+  return true, update[idxMiddle]
+}
+
 func main() {
 	rules, updates := loadRulesAndUpdates()
-	fmt.Println(rules)
-	fmt.Println(updates)
+  var sumUpdates int
+  var n int
+  for i := 0; i < len(updates); i++ {
+    _, n = updatePassesRules(updates[i], rules)
+    sumUpdates += n
+  }
+	fmt.Println(sumUpdates)
 }
