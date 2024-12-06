@@ -5,15 +5,8 @@ import (
 )
 
 func main() {
-  x := make([]int, 77)
-  x = append(x, 44)
-  fmt.Println(x)
+  var x []int = []int{1, 2, 3, 4, 5}
   fmt.Println(len(x))
-  fmt.Println(cap(x))
-
-  var y []int
-  // y = [2]int{1, 2}
-  fmt.Println(y)
-  fmt.Println(len(y))
-  fmt.Println(cap(y))
+  fmt.Println(len(x) / 2)
+  fmt.Println(x[len(x) / 2])
 }
